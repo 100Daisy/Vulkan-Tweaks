@@ -115,11 +115,13 @@ window.onload = function() {
     console.log(`Theme is set to ${theme.theme}.`);
     console.log('Applying theme for side panel.');
     lista.contentDocument.head.appendChild(window[theme.theme][1]);
-    ramka.contentDocument.head.appendChild(window[theme.theme][0]);
     console.log('Applying theme for frame.')
   });
 }
 ramka.onload = function() {
+  chrome.storage.sync.get("theme", function(theme){
+    ramka.contentDocument.head.appendChild(window[theme.theme][0]);
+  });
   chrome.storage.sync.get("saveLast", function(status){
     if (status.saveLast) {
       var klasa = ramka.contentDocument.getElementsByClassName("tytulnapis")[0].innerHTML;
