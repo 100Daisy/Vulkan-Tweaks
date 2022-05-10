@@ -1,3 +1,10 @@
+var vulkan_header = document.getElementsByName("description")[0];
+var pattern = '<meta name="description" content=". Plan lekcji utworzony za pomocą programu Plan lekcji Optivum firmy VULCAN">'
+
+if (vulkan_header.outerHTML != pattern) {
+  throw new Error("Common header is not detected. Extension will abort.");
+}
+
 var ramka = document.getElementsByName("plan")[0];
 var lista = document.getElementsByName("list")[0];
 
