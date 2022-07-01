@@ -105,6 +105,9 @@ html {
 `
 Dark = [ramka_theme, list_theme]
 window.onload = function() {
+  chrome.storage.sync.get("theme", function(theme){
+    ramka.contentDocument.head.appendChild(window[theme.theme][0]);
+  });
   chrome.storage.sync.get("isChangePending", function(themeChangePending){
     if (themeChangePending.isChangePending) {
       chrome.storage.sync.get("onLoadAnim", function(animation){
