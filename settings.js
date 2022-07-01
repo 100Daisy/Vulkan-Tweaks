@@ -1,7 +1,10 @@
+// Find UI elements.
 const Button = document.getElementById("addtowhitelist");
 const saveLast = document.getElementById("saveLast");
 const themeTransition = document.getElementById("themeTransition");
 const selectTheme = document.getElementById("themes");
+
+// On settings load.
 chrome.storage.sync.get("url", function(whitelist){
     for (let i = 0; i < whitelist.url.length; i++) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) { 
@@ -36,6 +39,7 @@ chrome.storage.sync.get("onLoadAnim", function(animation){
     }
 });
 
+// Whitelist button logic.
 Button.addEventListener('click', function () {
     chrome.storage.sync.get("url", function(whitelist){
         if (whitelist.url) {
@@ -78,6 +82,7 @@ Button.addEventListener('click', function () {
     });
 });
 
+// Save last choice checkbox logic.
 saveLast.addEventListener('click', function () {
     if (saveLast.checked) {
         chrome.storage.sync.set({ "saveLast": true }, function(){
@@ -90,6 +95,7 @@ saveLast.addEventListener('click', function () {
     }
 });
 
+// Enable transition effect checkbox logic.
 themeTransition.addEventListener('click', function () {
     if (themeTransition.checked) {
         chrome.storage.sync.set({ "onLoadAnim": true }, function(){
@@ -101,6 +107,8 @@ themeTransition.addEventListener('click', function () {
         });
     }
 });
+
+// theme selector logic.
 selectTheme.onchange = () => {
     value = selectTheme.options[selectTheme.selectedIndex].innerHTML
     chrome.storage.sync.set({ "isChangePending": true }, function(){
