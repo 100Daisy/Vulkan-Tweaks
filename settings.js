@@ -1,11 +1,11 @@
 const Button = document.getElementById("addtowhitelist");
-const Option1 = document.getElementById("Option1");
-const Option2 = document.getElementById("Option2");
+const saveLast = document.getElementById("saveLast");
+const themeTransition = document.getElementById("themeTransition");
 const selectTheme = document.getElementById("themes");
-chrome.storage.sync.get("url", function(test){
-    for (let i = 0; i < test.url.length; i++) {
+chrome.storage.sync.get("url", function(whitelist){
+    for (let i = 0; i < whitelist.url.length; i++) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) { 
-            if (test.url[i] == tabs[0].url) {
+            if (whitelist.url[i] == tabs[0].url) {
                 Button.innerText = "Disable on this site!"
             }
         });
@@ -14,10 +14,10 @@ chrome.storage.sync.get("url", function(test){
 
 chrome.storage.sync.get("saveLast", function(status){
     if (status.saveLast) {
-        Option1.checked = true
+        saveLast.checked = true
         console.log(`Restoring save last choice checkbox to ${status.saveLast}.`);
     } else {
-        Option1.checked = false
+        saveLast.checked = false
         console.log(`Restoring save last choice checkbox to ${status}.`);
     }
 });
@@ -28,32 +28,32 @@ chrome.storage.sync.get("theme", function(status){
 
 chrome.storage.sync.get("onLoadAnim", function(animation){
     if (animation.onLoadAnim) {
-        Option2.checked = true
+        themeTransition.checked = true
         console.log(`Restoring theme transition checkbox to ${animation.onLoadAnim}.`);
     } else {
-        Option2.checked = false
+        themeTransition.checked = false
         console.log(`Restoring theme transtion checkbox to ${animation.onLoadAnim}.`)
     }
 });
 
 Button.addEventListener('click', function () {
-    chrome.storage.sync.get("url", function(array){
-        if (array.url) {
-            if (array.url.length > 0) {
-                array = array.url
+    chrome.storage.sync.get("url", function(whitelist){
+        if (whitelist.url) {
+            if (whitelist.url.length > 0) {
+                whitelist = whitelist.url
                 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) { 
-                    if (array.includes(tabs[0].url)) {
-                            array = array.filter(function(value, index, arr){ 
+                    if (whitelist.includes(tabs[0].url)) {
+                            whitelist = whitelist.filter(function(value, index, arr){ 
                                 return value != tabs[0].url;
                             });
-                            chrome.storage.sync.set({ "url": array }, function(){
+                            chrome.storage.sync.set({ "url": whitelist }, function(){
                                 console.log('Site removed from whitelist.')
                                 Button.innerText = "Enable on this site!"
                             });
                     } else {
 
-                            array.push(tabs[0].url)
-                            chrome.storage.sync.set({ "url": array }, function(){
+                            whitelist.push(tabs[0].url)
+                            chrome.storage.sync.set({ "url": whitelist }, function(){
                                 console.log('Site adden to whitelist.')
                                 Button.innerText = "Disable on this site!"
                             });
@@ -78,8 +78,8 @@ Button.addEventListener('click', function () {
     });
 });
 
-Option1.addEventListener('click', function () {
-    if (Option1.checked) {
+saveLast.addEventListener('click', function () {
+    if (saveLast.checked) {
         chrome.storage.sync.set({ "saveLast": true }, function(){
             console.log('Setting save last choice to true.');
         });
@@ -90,8 +90,8 @@ Option1.addEventListener('click', function () {
     }
 });
 
-Option2.addEventListener('click', function () {
-    if (Option2.checked) {
+themeTransition.addEventListener('click', function () {
+    if (themeTransition.checked) {
         chrome.storage.sync.set({ "onLoadAnim": true }, function(){
             console.log('Setting theme transition to true.')
         });
