@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Vulkan Tweaks",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Cool features of vulkan generated lesson plans",
   "permissions": [
     "storage",
