@@ -102,6 +102,7 @@ chrome.storage.sync.get("url", function(array){
     Dark = [ramka_theme, list_theme]
       chrome.storage.sync.get("theme", function(theme){
         ramka.contentDocument.head.appendChild(window[theme.theme][0]);
+        lista.contentDocument.head.appendChild(window[theme.theme][1]);
       });
       // Check if theme change is ongoing.
       chrome.storage.sync.get("isChangePending", function(themeChangePending){
@@ -118,13 +119,11 @@ chrome.storage.sync.get("url", function(array){
           });    
         }
       });
-      chrome.storage.sync.get("theme", function(theme){
-        lista.contentDocument.head.appendChild(window[theme.theme][1]);
-      });
       // Apply theme on every iframe load.
       ramka.onload = function() {
         chrome.storage.sync.get("theme", function(theme){
           ramka.contentDocument.head.appendChild(window[theme.theme][0]);
+          lista.contentDocument.head.appendChild(window[theme.theme][1]);
         });
         chrome.storage.sync.get("saveLast", function(status){
           if (status.saveLast) {
