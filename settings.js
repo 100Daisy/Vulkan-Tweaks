@@ -1,6 +1,17 @@
+const Button = document.getElementById("addtowhitelist");
 const Option1 = document.getElementById("Option1");
 const Option2 = document.getElementById("Option2");
 const selectTheme = document.getElementById("themes");
+chrome.storage.sync.get("url", function(test){
+    for (let i = 0; i < test.url.length; i++) {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) { 
+            if (test.url[i] == tabs[0].url) {
+                Button.innerText = "Disable on this site!"
+            }
+        });
+    }
+});
+
 chrome.storage.sync.get("saveLast", function(status){
     if (status.saveLast) {
         Option1.checked = true
@@ -13,7 +24,7 @@ chrome.storage.sync.get("saveLast", function(status){
 chrome.storage.sync.get("theme", function(status){
     selectTheme.value = status.theme
     console.log(`Restoring theme select to ${status.theme}.`)
-    });
+});
 
 chrome.storage.sync.get("onLoadAnim", function(animation){
     if (animation.onLoadAnim) {
@@ -23,6 +34,48 @@ chrome.storage.sync.get("onLoadAnim", function(animation){
         Option2.checked = false
         console.log(`Restoring theme transtion checkbox to ${animation.onLoadAnim}.`)
     }
+});
+
+Button.addEventListener('click', function () {
+    chrome.storage.sync.get("url", function(array){
+        if (array.url) {
+            if (array.url.length > 0) {
+                array = array.url
+                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) { 
+                    if (array.includes(tabs[0].url)) {
+                            array = array.filter(function(value, index, arr){ 
+                                return value != tabs[0].url;
+                            });
+                            chrome.storage.sync.set({ "url": array }, function(){
+                                console.log('Site removed from whitelist.')
+                                Button.innerText = "Enable on this site!"
+                            });
+                    } else {
+
+                            array.push(tabs[0].url)
+                            chrome.storage.sync.set({ "url": array }, function(){
+                                console.log('Site adden to whitelist.')
+                                Button.innerText = "Disable on this site!"
+                            });
+                    }
+                });
+            } else {
+                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) { 
+                    chrome.storage.sync.set({ "url": [tabs[0].url] }, function(){
+                        console.log('Site adden to whitelist.')
+                        Button.innerText = "Disable on this site!"
+                    });
+                });
+            }
+        } else {
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) { 
+                chrome.storage.sync.set({ "url": [tabs[0].url] }, function(){
+                    console.log('Site adden to whitelist.')
+                    Button.innerText = "Disable on this site!"
+                });
+            });
+        }
+    });
 });
 
 Option1.addEventListener('click', function () {
